@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Input Names</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .name-input {
+        text-align: center;
+      }
+      .avatar-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+      .avatar-img.active {
+        border: 4px solid blue; /* Add a border to indicate selection */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <h1 class="display-1">Daily room</h1>
+        <div class="col-6">
+          <form onsubmit="submitForm(event)" class="name-input" id="nameForm">
+            <div id="nameInputs">
+              <div class="mb-3">
+                <label for="name1" class="form-label"
+                  >Digite o participante 1:</label
+                >
+                <input
+                  type="text"
+                  id="name1"
+                  name="name1"
+                  class="form-control"
+                />
+                <div class="mt-2" id="avatarSelection1">
+                  <input
+                    type="hidden"
+                    name="avatar1"
+                    id="avatar1"
+                    value="avatar.svg"
+                  />
+                  <img
+                    src="avatar.svg"
+                    class="avatar-img"
+                    alt="Avatar 1"
+                    onclick="selectAvatar(1, 'avatar.svg')"
+                  />
+                  <img
+                    src="avatar2.svg"
+                    class="avatar-img"
+                    alt="Avatar 2"
+                    onclick="selectAvatar(1, 'avatar2.svg')"
+                  />
+                  <img
+                    src="avatar3.svg"
+                    class="avatar-img"
+                    alt="Avatar 3"
+                    onclick="selectAvatar(1, 'avatar3.svg')"
+                  />
+                  <img
+                    src="avatar4.svg"
+                    class="avatar-img"
+                    alt="Avatar 4"
+                    onclick="selectAvatar(1, 'avatar4.svg')"
+                  />
+                  <img
+                    src="avatar5.svg"
+                    class="avatar-img"
+                    alt="Avatar 5"
+                    onclick="selectAvatar(1, 'avatar5.svg')"
+                  />
+                  <img
+                    src="avatar6.svg"
+                    class="avatar-img"
+                    alt="Avatar 6"
+                    onclick="selectAvatar(1, 'avatar6.svg')"
+                  />
+                  <img
+                    src="avatar7.svg"
+                    class="avatar-img"
+                    alt="Avatar 7"
+                    onclick="selectAvatar(1, 'avatar7.svg')"
+                  />
+                  <img
+                    src="avatar8.svg"
+                    class="avatar-img"
+                    alt="Avatar 8"
+                    onclick="selectAvatar(1, 'avatar8.svg')"
+                  />
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="addPerson()"
+            >
+              Adicionar participante
+            </button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      let personCount = 1;
+
+      function addPerson() {
+        personCount++;
+        const nameInputs = document.getElementById("nameInputs");
+        const newInput = document.createElement("div");
+        newInput.innerHTML = `
+          <div class="mb-3">
+            <label for="name${personCount}" class="form-label">Digite o participante ${personCount}:</label>
+            <input type="text" id="name${personCount}" name="name${personCount}" class="form-control" />
+            <div class="mt-2" id="avatarSelection${personCount}">
+              <input type="hidden" name="avatar${personCount}" id="avatar${personCount}" value="avatar.svg" />
+              <img src="avatar.svg" class="avatar-img" alt="Avatar 1" onclick="selectAvatar(${personCount}, 'avatar.svg')" />
+              <img src="avatar2.svg" class="avatar-img" alt="Avatar 2" onclick="selectAvatar(${personCount}, 'avatar2.svg')" />
+              <img src="avatar3.svg" class="avatar-img" alt="Avatar 3" onclick="selectAvatar(${personCount}, 'avatar3.svg')" />
+              <img src="avatar4.svg" class="avatar-img" alt="Avatar 4" onclick="selectAvatar(${personCount}, 'avatar4.svg')" />
+              <img src="avatar5.svg" class="avatar-img" alt="Avatar 5" onclick="selectAvatar(${personCount}, 'avatar5.svg')" />
+              <img src="avatar6.svg" class="avatar-img" alt="Avatar 6" onclick="selectAvatar(${personCount}, 'avatar6.svg')" />
+              <img src="avatar7.svg" class="avatar-img" alt="Avatar 7" onclick="selectAvatar(${personCount}, 'avatar7.svg')" />
+              <img src="avatar8.svg" class="avatar-img" alt="Avatar 8" onclick="selectAvatar(${personCount}, 'avatar8.svg')" />
+            </div>
+          </div>
+        `;
+        nameInputs.appendChild(newInput);
+      }
+
+      function selectAvatar(personNumber, avatar) {
+        // Remove 'active' class from all images in the same group
+        const avatarSelection = document.getElementById(
+          `avatarSelection${personNumber}`
+        );
+        const images = avatarSelection.getElementsByTagName("img");
+        for (let i = 0; i < images.length; i++) {
+          images[i].classList.remove("active");
+        }
+
+        // Add 'active' class to the selected image
+        const selectedAvatar = document.querySelector(
+          `#avatarSelection${personNumber} img[src="${avatar}"]`
+        );
+        selectedAvatar.classList.add("active");
+
+        // Update the hidden input field with the selected avatar URL
+        const hiddenInput = document.getElementById(`avatar${personNumber}`);
+        if (hiddenInput) {
+          hiddenInput.value = avatar;
+        }
+      }
+
+      function submitForm(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Construct the URL with names and avatars
+        const queryParams = new URLSearchParams();
+        for (let i = 1; i <= personCount; i++) {
+          const nameInput = document.getElementById(`name${i}`);
+          const avatarInput = document.getElementById(`avatar${i}`);
+
+          if (nameInput && avatarInput) {
+            queryParams.append(`name${i}`, nameInput.value);
+            queryParams.append(`avatar${i}`, avatarInput.value);
+          }
+        }
+
+        const url = `circles.html?${queryParams.toString()}&pessoas=${personCount}`;
+        window.location.href = url;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <style>
+      #parentdiv {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        height: 300px;
+        background-color: #ac5;
+        border-radius: 50%;
+      }
+
+      .div2 {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background-color: #ac5;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        cursor: pointer;
+        font-size: 0.7rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        overflow: hidden; /* Ensure the span stays within the circle */
+      }
+
+      .div2.active {
+        border: 4px solid blue; /* Add a border to indicate selection */
+      }
+
+      .div2 span {
+        background-color: black;
+        padding: 2px 5px; /* Adjust as needed */
+        color: white;
+        border-radius: 5px;
+        margin-top: 5px; /* Adjust as needed */
+        width: 100%; /* Span width to be 100% of the parent div */
+        text-align: center; /* Center text horizontally */
+        box-sizing: border-box; /* Include padding in the width calculation */
+        bottom: 0; /* Position the span at the bottom */
+        position: absolute; /* Position the span relative to its parent div */
+      }
+
+      .countdown {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 48px;
+        display: block; /* Initially show countdown */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="display-1 text-center">
+        Click no avatar para iniciar o tempo.
+      </h1>
+      <div id="parentdiv"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const names = [];
+
+      const pessoas = urlParams.get("pessoas");
+      console.log(pessoas);
+      var div = 360 / pessoas;
+      var radius = 300; // Increased radius value
+      var parentdiv = document.getElementById("parentdiv");
+      var offsetToParentCenter = parseInt(parentdiv.offsetWidth / 2); //assumes parent is square
+      var offsetToChildCenter = 20;
+      var totalOffset = offsetToParentCenter - offsetToChildCenter;
+
+      // Get the names and avatars from the URL query parameters
+
+      const avatars = [];
+      for (var i = 1; i <= pessoas; ++i) {
+        const name = urlParams.get("name" + i);
+        const avatar = urlParams.get("avatar" + i);
+        if (name && avatar) {
+          names.push(name);
+          avatars.push(avatar);
+        }
+      }
+
+      for (var i = 0; i < avatars.length; ++i) {
+        var childdiv = document.createElement("div");
+        childdiv.className = "div2";
+        childdiv.style.position = "absolute";
+        var y = Math.sin(div * i * (Math.PI / 180)) * radius;
+        var x = Math.cos(div * i * (Math.PI / 180)) * radius;
+        childdiv.style.top = (y + totalOffset).toString() + "px";
+        childdiv.style.left = (x + totalOffset).toString() + "px";
+        childdiv.style.backgroundImage = "url('" + avatars[i] + "')";
+        var nameSpan = document.createElement("span");
+        nameSpan.textContent = names[i]; // Set the name as the text content of the span
+        childdiv.appendChild(nameSpan); // Append span to the div
+        parentdiv.appendChild(childdiv);
+      }
+
+      var countdown = document.createElement("div");
+      countdown.className = "countdown";
+      countdown.innerHTML = "1:00"; // Initialize countdown to 1 minute
+      parentdiv.appendChild(countdown);
+
+      var countdownTimer; // Variable to hold the countdown timer
+
+      // Click event listener to toggle active class and show countdown
+      parentdiv.addEventListener("click", function (e) {
+        var target = e.target;
+        if (target && target.classList.contains("div2")) {
+          if (!target.classList.contains("active")) {
+            // Deactivate other active circles
+            var activeCircles = document.querySelectorAll(".div2.active");
+            activeCircles.forEach(function (circle) {
+              circle.classList.remove("active");
+            });
+
+            // Activate this circle
+            target.classList.add("active");
+
+            // Restart countdown
+            if (countdownTimer) {
+              clearInterval(countdownTimer); // Clear existing countdown timer
+            }
+            var timeleft = 60;
+            countdown.innerHTML = "1:00";
+            countdown.style.display = "block";
+            countdownTimer = setInterval(function () {
+              var minutes = Math.floor(timeleft / 60);
+              var seconds = timeleft % 60;
+              countdown.innerHTML =
+                minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+              timeleft -= 1;
+              if (timeleft < 0) {
+                clearInterval(countdownTimer);
+                countdown.style.display = "none"; // Hide countdown when time is up
+              }
+            }, 1000);
+          } else {
+            // Deactivate this circle
+            target.classList.remove("active");
+            // Hide countdown
+            countdown.style.display = "none";
+            clearInterval(countdownTimer); // Clear the countdown timer
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
